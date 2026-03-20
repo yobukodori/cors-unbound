@@ -1,0 +1,171 @@
+.hide {
+	display: none !important;
+}
+
+#alert { 
+	position: fixed;
+	top: 30%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	padding: 0.5em 1em;
+	background-color: #ffff88;
+	color: black;
+	border: solid;
+	min-width: 200px
+}
+
+body {
+	background-color: Canvas;
+	color: CanvasText;
+	color-scheme: light dark;
+}
+
+body.pc {
+	/* font-size: large; */
+}
+
+body.mobile {
+	/* font-size: 15px; */
+}
+
+.appInfo {
+	font-weight: bold;
+}
+
+#appIcon {
+	height: 1.2em;
+}
+
+#appVer {
+	margin-left: 0.5em;
+}
+
+select {
+	font-size: inherit;
+}
+
+textarea {
+	font-size: inherit;
+}
+
+button {
+	font-size: inherit;
+	padding: 0.1em 0.5em;
+}
+
+input[type="text"] {
+	font-size: inherit;
+}
+
+.text-box {
+	margin-top: 0.2em;
+	border-style: solid;
+	padding: 0px 5px 5px;
+	border-width: thin;
+}
+
+#rules {
+	margin-left: 0.5em;
+	border: 1px solid;
+	padding: 4px;
+	border-radius: 6px;
+}
+
+#rules button {
+	margin-left: 0.5em;
+}
+
+.rule {
+  border-top: 1px solid;
+  padding: 6px 2px
+}
+
+span.index {
+	margin-left: 2px;
+}
+
+.pc .url-box, .pc .action-box, .pc .header-value {
+	display: flex;
+	align-items: center;
+	white-space: nowrap;
+}
+
+.pc .url-box > input, .pc .header-value, .pc .header-value > input {
+	flex: 1;
+	min-width: 0;
+}
+
+.target .url-box::before, .action::before {
+  content: "├ ";
+}
+
+.target:last-child .url-box::before, .action:last-child::before {
+  content: "└ ";
+}
+
+.target + .target, .action + .action {
+	margin-top: 0.5em;
+}
+
+.target-list {
+	margin-top: 0.5em;
+	margin-right: 1em;
+}
+
+.header-action, .resource-type {
+	margin-left: 2em;
+}
+
+.target .details {
+	padding-left: 1em;
+}
+
+.action-box input {
+  margin-left: 0.5em;
+}
+
+ .resource-type > div {
+	/*margin-left: 0.5em;*/
+}
+
+.resource-type .item {
+  white-space: nowrap;
+  display: inline-block;
+  margin-right: 0.5em;
+}
+
+.main > .text-box {
+	display: none;
+}
+
+#appliedUrls, #userAgent {
+	width: 99%;
+	word-break: break-all;
+}
+
+.button-area {
+	margin-top: 5px;
+}
+
+#toggle.on {
+	background-color: yellow;
+	color: black;
+}
+
+#toggle.off {
+	background-color: gray;
+	font-weight: bold;
+	color: yellow;
+	border-color: black;
+}
+
+span.error {
+	background-color: pink;
+	color: black;
+	font-weight: bold;
+}
+
+span.warning {
+	background-color: yellow;
+	color: black;
+}

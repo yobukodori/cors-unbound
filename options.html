@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="options.css">
+</head>
+<body>
+	<div class="main">
+		<div>
+			<span class="appInfo">
+				<img id="appIcon" src="icons/icon-48.png">
+				<span id="appName">(app name)</span><span id="appVer">(app version)</span>
+			</span>
+			<input type="checkbox" id="enableAtStartup"><label for="enableAtStartup">Enable at startup</label>
+            <input type="checkbox" id="printDebugInfo"><label for="printDebugInfo">Print debug info</label>
+			&nbsp;
+			<label for="colorScheme">Theme:</label>
+			<select id="colorScheme">
+			<option value="auto">Auto</option>
+			<option value="light">Light</option>
+			<option value="dark">Dark</option>
+			</select>
+		</div>
+		<div id="rules">
+			<div>Rules:</div>
+			<div class="rule-list"></div>
+		</div>
+		<div class="button-area">
+			<button type="button" id="save">Save</button>
+			<button type="button" id="apply">Apply</button>
+			| <button type="button" id="getStatus">Get Status</button>
+			<button type="button" id="toggle">Toggle On/Off</button>
+			<button type="button" id="clearLog">Clear Log</button>
+			| <button type="button" id="exportSettings">Export Settings</button>
+			<button type="button" id="importSettings">Import Settings</button>
+		</div>
+		<div id="log">dummy for<br/><br/><br/><br/>android</div>
+	</div>
+	<template id="rule-template">
+		<div class="rule">
+			<div class="url-box">
+				<span class="index">0</span>.
+				Origin URLs:<input type="text" placeholder="file:///C:/webapp/index.html, https://your.com/webapp/*"></input>
+				<button type="button" class="up-btn" title="Move Item Up">↑</button>
+				<button type="button" class="down-btn" title="Move Item Down">↓</button>
+				<button type="button" class="add-btn" title="Add a New Rule">+</button>
+				<button type="button" class="remove-btn" title="Remove This Rule">−</button>
+			</div>
+			<div class="target-list"></div>
+		</div>
+	</template>
+	<template id="target-template">
+		<div class="target">
+			<div class="url-box">
+				<span class="index">0</span>.
+				Target URLs:<input type="text"
+					placeholder="https://a.com/*, https://b.com/*, https://c.com/data.html">
+				<button type="button" class="toggle-details-btn" title="Show / Hide details">▸</button>
+				<button type="button" class="up-btn" title="Move Item Up">↑</button>
+				<button type="button" class="down-btn" title="Move Item Down">↓</button>
+				<button type="button" class="add-btn" title="Add a New Target URL">+</button>
+				<button type="button" class="remove-btn" title="Remove This Target">−️</button>
+			</div>
+			<div class="details hide">
+				<div class="header-action">
+					<span class="category">Header Action</span>
+					<div class="list"></div>
+				</div>
+				<div class="resource-type">
+					<span class="category">Resource Type</span>
+					<input type="checkbox" id="id-check-all"><label for="id-check-all">Check All</label>
+					<div>
+						<span class="item"><input type="checkbox" id="id-type-beacon"><label for="id-type-beacon">beacon</label></span>
+						<span class="item"><input type="checkbox" id="id-type-csp_report"><label for="id-type-csp_report">csp_report</label></span>
+						<span class="item"><input type="checkbox" id="id-type-font"><label for="id-type-font">font</label></span>
+						<span class="item"><input type="checkbox" id="id-type-image"><label for="id-type-image">image</label></span>
+						<span class="item"><input type="checkbox" id="id-type-imageset"><label for="id-type-imageset">imageset</label></span>
+						<span class="item"><input type="checkbox" id="id-type-json"><label for="id-type-json">json</label></span>
+						<span class="item"><input type="checkbox" id="id-type-main_frame"><label for="id-type-main_frame">main_frame</label></span>
+						<span class="item"><input type="checkbox" id="id-type-media"><label for="id-type-media">media</label></span>
+						<span class="item"><input type="checkbox" id="id-type-object"><label for="id-type-object">object</label></span>
+						<span class="item"><input type="checkbox" id="id-type-object_subrequest"><label for="id-type-object_subrequest">object_subrequest</label></span>
+						<span class="item"><input type="checkbox" id="id-type-ping"><label for="id-type-ping">ping</label></span>
+						<span class="item"><input type="checkbox" id="id-type-script"><label for="id-type-script">script</label></span>
+						<span class="item"><input type="checkbox" id="id-type-speculative"><label for="id-type-speculative">speculative</label></span>
+						<span class="item"><input type="checkbox" id="id-type-stylesheet"><label for="id-type-stylesheet">stylesheet</label></span>
+						<span class="item"><input type="checkbox" id="id-type-sub_frame"><label for="id-type-sub_frame">sub_frame</label></span>
+						<span class="item"><input type="checkbox" id="id-type-web_manifest"><label for="id-type-web_manifest">web_manifest</label></span>
+						<span class="item"><input type="checkbox" id="id-type-websocket"><label for="id-type-websocket">websocket</label></span>
+						<span class="item"><input type="checkbox" id="id-type-xml_dtd"><label for="id-type-xml_dtd">xml_dtd</label></span>
+						<span class="item"><input type="checkbox" id="id-type-xmlhttprequest"><label for="id-type-xmlhttprequest">xmlhttprequest</label></span>
+						<span class="item"><input type="checkbox" id="id-type-xslt"><label for="id-type-xslt">xslt</label></span>
+						<span class="item"><input type="checkbox" id="id-type-other"><label for="id-type-other">other</label></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</template>
+	<template id="action-template">
+		<div class="action action-box">
+			<span class="index">0</span>.
+			<select class="select-type" title="Select message type">
+				<option value="request">Request</option>
+				<option value="response">Response</option>
+			</select>
+			<select class="select-action" title="Select an action for this header">
+				<option value="set" title="Add / Modify Header">Set Header</option>
+				<option value="remove" title="Remove Header">Remove header</option>
+			</select>
+			<div class="header-name"><input type="text" placeholder="Header name"></div>
+			<div class="header-value"><input type="text" placeholder="Header value"></div>
+				<button type="button" class="add-btn" title="Add a New Action">+</button>
+				<button type="button" class="remove-btn" title="Remove This Action">−</button>
+		</div>
+	</template>
+	<script src="util.js"></script>
+	<script src="options.js"></script>
+</body>
+</html>
