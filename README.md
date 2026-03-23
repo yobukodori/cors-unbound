@@ -54,8 +54,9 @@ No data collection.
 
 # 🛠 Installation
 
-This extension is currently in **private beta**.  
-AMO publishing will be added later.
+CORS Unbound Beta is available on the Firefox Add-ons site:
+
+[**https://addons.mozilla.org/addon/cors-unbound-beta/**](https://addons.mozilla.org/addon/cors-unbound-beta/)
 
 ### Temporary installation (development)
 
