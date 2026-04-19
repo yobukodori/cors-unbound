@@ -137,6 +137,11 @@ function addAction(target, data){
 			headerValue.classList.add("hide");
 		}
 	});
+	clone.querySelectorAll('input[type="text"]').forEach(input => {
+        input.addEventListener("click", ev => {
+            showEditBoxForInput(ev.currentTarget);
+        });
+    });
 	appendListItem(target.querySelector(".header-action > .list"), clone);
 	selectAction.dispatchEvent(new Event("change"));
 }
@@ -175,6 +180,11 @@ function addTarget(rule, data){
 	clone.querySelector('.remove-btn').addEventListener("click", ev =>{
 		onListItemRemoveBtnClick(ev.currentTarget.closest('.target'));
 	});
+	clone.querySelectorAll('input[type="text"]').forEach(input => {
+        input.addEventListener("click", ev => {
+            showEditBoxForInput(ev.currentTarget);
+        });
+    });
 	appendListItem(rule.querySelector(".target-list"), clone);
 }
 
@@ -200,6 +210,11 @@ function addRule(data){
 	clone.querySelector(".remove-btn").addEventListener("click", ev =>{
 		onListItemRemoveBtnClick(ev.currentTarget.closest('.rule'));
 	});
+	clone.querySelectorAll('input[type="text"]').forEach(input => {
+        input.addEventListener("click", ev => {
+            showEditBoxForInput(ev.currentTarget);
+        });
+    });
 	appendListItem(document.querySelector('.rule-list'), clone);
 }
 
@@ -306,8 +321,6 @@ function applySettings(fSave)
 	.catch(err => onSendMessageError("updateSettings", err));
 }
 
-let g_is_android = navigator.userAgent.includes('Android'), g_is_pc = ! g_is_android;
-
 function onStatusChange(fEnabled){
 	let e = document.querySelector('#toggle');
 	e.className = (fEnabled ? "on" : "off");
@@ -353,7 +366,23 @@ function setupSettings(v){
 	(v.rules && v.rules.length > 0) ? v.rules.forEach(ruleData => addRule(ruleData)) : addRule();
 }
 
-function onDOMContentLoaded(){
+function getAppInfo(){
+	const man = browser.runtime.getManifest(),
+		name = man.name,
+		app = {};
+	if (name.toLowerCase().endsWith(" beta")){
+		app.name = name.slice(0, -5).trim();
+		app.beta = true;
+	}
+	else {
+		app.name = name.trim();
+		app.beta = false;
+	}
+	app.version = man.version;
+	return app;
+}
+
+function onDOMContentLoaded(platformInfo){
 	const man = browser.runtime.getManifest(), 
 		appName = man.name, // man.browser_action.default_title, 
 		appVer = "v." + man.version;
@@ -394,10 +423,7 @@ function onDOMContentLoaded(){
 					let d = new Date();
 					return d.getFullYear() + f(d.getMonth() + 1) + f(d.getDate()) + "-" + f(d.getHours()) + f(d.getMinutes()) + f(d.getSeconds());
 				};
-				let man = browser.runtime.getManifest(), 
-					appName = man.name,
-					appVer = "v." + man.version;
-				v.app = appName + " " + appVer;
+				v.app = getAppInfo();
 				let settingsData = JSON.stringify(v);
 				let e = document.createElement("a");
 				e.href = URL.createObjectURL(new Blob([settingsData], {type:"application/json"}));
@@ -419,7 +445,18 @@ function onDOMContentLoaded(){
 				reader.addEventListener("load", ev =>{
 					try {
 						const v = JSON.parse(reader.result);
-						if (! v?.app?.startsWith(appName)){
+						var app = getAppInfo(), name, version, beta;
+						if (v.app === "CORS Unbound Beta v.0.9.0"){
+							name = "CORS Unbound";
+							version = "0.9.0";
+							beta = true;
+						}
+						else {
+							name = v.app.name ?? "";
+							version = v.app.version ?? "";
+							beta = v.app.beta ?? null;
+						}
+						if (name !== app.name){
 							throw Error("invalid settings data");
 						}
 						setupSettings(v);
@@ -437,7 +474,7 @@ function onDOMContentLoaded(){
 		e.click();
 	});
 
-	document.body.classList.add(g_is_pc ? "pc" : "mobile");
+	document.body.classList.add(platformInfo.os === "android" ? "mobile" : "pc");
 	
 	browser.runtime.sendMessage({type: "getSettings"})
 	.then(v=>{
@@ -452,5 +489,7 @@ function onDOMContentLoaded(){
 	.catch(err => onSendMessageError("getSettings", err));
 }
 
-document.addEventListener('DOMContentLoaded', onDOMContentLoaded);
+document.addEventListener('DOMContentLoaded', ev => {
+	browser.runtime.getPlatformInfo().then(onDOMContentLoaded);
+});
 browser.runtime.onMessage.addListener(onMessage);
