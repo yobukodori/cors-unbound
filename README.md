@@ -56,7 +56,7 @@ No data collection.
 
 CORS Unbound Beta is available on the Firefox Add-ons site:
 
-[**https://addons.mozilla.org/addon/cors-unbound-beta/**](https://addons.mozilla.org/addon/cors-unbound-beta/)
+[**https://addons.mozilla.org/addon/cors-unbound/**](https://addons.mozilla.org/addon/cors-unbound/)
 
 ### Temporary installation (development)
 
