@@ -74,7 +74,6 @@ function updateListItems(list, startIndex = 0){
 	for (let i = startIndex ; i < length ; i++){
 		const item = list.children[i];
         item.querySelector('.index').textContent = i + 1;
-		item.querySelector('.remove-btn').disabled = length === 1;
 		const upBtn = item.querySelector('.up-btn');
 		if (upBtn){
 			upBtn.disabled = i === 0;
@@ -99,17 +98,22 @@ function onListItemDownBtnClick(item){
 
 function onListItemRemoveBtnClick(item){
 	const list = item.parentElement;
+	if (list.children.length === 1){
+		if (item.classList.contains("rule")) addRule();
+		else if (item.classList.contains("target")) addTarget(item.closest('.rule'));
+		else if (item.classList.contains("action")) addAction(item.closest('.target'));
+	}
 	item.remove();
 	updateListItems(list);
 }
 
-function appendListItem(list, item){
-	const index = list.children.length;
-	list.appendChild(item);
-	updateListItems(list, index > 0 ? index - 1 : 0);
+function appendListItem(list, item, currentItem){
+	const next = currentItem ? currentItem.nextElementSibling : null;
+	list.insertBefore(item, next);
+	updateListItems(list);
 }
 
-function addAction(target, data){
+function addAction(target, data = null, currentAction = null){
 	const tpl = document.getElementById("action-template");
 	const clone = tpl.content.firstElementChild.cloneNode(true),
 		selectType = clone.querySelector(".select-type");
@@ -121,7 +125,7 @@ function addAction(target, data){
 		clone.querySelector('.header-value input').value = data.headerValue;
 	}
 	clone.querySelector(".add-btn").addEventListener("click", ev =>{
-		addAction(ev.currentTarget.closest(".target"));
+		addAction(ev.currentTarget.closest(".target"), null, ev.currentTarget.closest(".action"));
 	});
 	clone.querySelector(
 	".remove-btn").addEventListener("click", ev =>{
@@ -142,11 +146,11 @@ function addAction(target, data){
             showEditBoxForInput(ev.currentTarget);
         });
     });
-	appendListItem(target.querySelector(".header-action > .list"), clone);
+	appendListItem(target.querySelector(".header-action > .list"), clone, currentAction);
 	selectAction.dispatchEvent(new Event("change"));
 }
 
-function addTarget(rule, data){
+function addTarget(rule, data = null, currentTarget = null){
 	const tpl = document.getElementById("target-template");
 	const clone = tpl.content.firstElementChild.cloneNode(true);
 	if (data){
@@ -175,7 +179,7 @@ function addTarget(rule, data){
 		onListItemDownBtnClick(ev.currentTarget.closest('.target'));
 	});
 	clone.querySelector(".add-btn").addEventListener("click", ev =>{
-		addTarget(ev.currentTarget.closest(".rule"));
+		addTarget(ev.currentTarget.closest(".rule"), null, ev.currentTarget.closest(".target"));
 	});
 	clone.querySelector('.remove-btn').addEventListener("click", ev =>{
 		onListItemRemoveBtnClick(ev.currentTarget.closest('.target'));
@@ -185,10 +189,10 @@ function addTarget(rule, data){
             showEditBoxForInput(ev.currentTarget);
         });
     });
-	appendListItem(rule.querySelector(".target-list"), clone);
+	appendListItem(rule.querySelector(".target-list"), clone, currentTarget);
 }
 
-function addRule(data){
+function addRule(data = null, currentRule = null){
 	const tpl = document.getElementById("rule-template");
 	const clone = tpl.content.firstElementChild.cloneNode(true);
 	if (data){
@@ -205,7 +209,7 @@ function addRule(data){
 		onListItemDownBtnClick(ev.currentTarget.closest('.rule'));
 	});
 	clone.querySelector(".add-btn").addEventListener("click", ev =>{
-		addRule();
+		addRule(null, ev.currentTarget.closest('.rule'));
 	});
 	clone.querySelector(".remove-btn").addEventListener("click", ev =>{
 		onListItemRemoveBtnClick(ev.currentTarget.closest('.rule'));
@@ -215,7 +219,7 @@ function addRule(data){
             showEditBoxForInput(ev.currentTarget);
         });
     });
-	appendListItem(document.querySelector('.rule-list'), clone);
+	appendListItem(document.querySelector('.rule-list'), clone, currentRule);
 }
 
 function onSendMessageError(type, err){
